@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Implementation Tracking & Evaluation Plan</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Source+Sans+Pro:wght@400;600;700&display=swap');
+
+        :root {
+            --brown: #4E3629;
+            --cardinal-red: #C00404;
+            --gold: #FFC72C;
+            --light-gray: #f9f8f7;
+            --text-color: #3d3d3d;
+            --border-color: #e5e5e5;
+            --white: #ffffff;
+            --hover-bg: #f5f2f0;
+        }
+
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--light-gray);
+            margin: 0;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 1rem auto;
+            background-color: var(--white);
+            padding: 2rem 3rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+            border: 1px solid var(--border-color);
+        }
+
+        h3, h4, h5 {
+            font-family: 'Lora', serif;
+            color: var(--brown);
+        }
+
+        h3 {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-top: 1rem;
+            margin-bottom: 3rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h4 {
+            font-size: 1.8rem;
+            margin-top: 3.5rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        .section-description {
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.05em;
+            color: #555;
+            padding-left: 1.5rem;
+            border-left: 4px solid var(--gold);
+        }
+        .section-description p {
+            margin: 0 0 0.5rem 0;
+        }
+
+        .prompt {
+            font-style: normal;
+            font-weight: 400;
+            color: #555;
+            font-size: 1em;
+            margin-top: 0;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+        
+        strong, label {
+            color: var(--brown);
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        input[type="text"], input[type="date"], textarea, select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background-color: var(--white);
+        }
+        
+        input[type="text"]:focus, input[type="date"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--brown);
+            box-shadow: 0 0 8px rgba(78, 54, 41, 0.15);
+        }
+        
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            table-layout: fixed;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+            word-wrap: break-word;
+        }
+
+        thead th {
+            background-color: var(--brown);
+            color: var(--white);
+            font-weight: 700;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            vertical-align: middle;
+        }
+        
+        .th-description {
+            font-size: 0.8em;
+            font-weight: 400;
+            font-style: normal;
+            text-transform: none;
+            color: #f0e9e9;
+            margin-top: 4px;
+            letter-spacing: normal;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: var(--light-gray);
+        }
+        tbody tr:hover {
+            background-color: var(--hover-bg);
+        }
+        
+        .table-actions {
+            text-align: left; /* Changed from right to left */
+            padding: 1rem 0 0 0;
+        }
+
+        button {
+            border: none;
+            padding: 0.7rem 1.4rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        button.add-row-btn {
+            background-color: var(--cardinal-red);
+            color: var(--white);
+        }
+        
+        button.add-row-btn:hover {
+            background-color: #a00303;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        button.delete-btn, button.delete-row-btn {
+            background-color: transparent;
+            color: var(--cardinal-red);
+            padding: 0.4rem 0.7rem;
+            font-size: 1rem;
+            line-height: 1;
+            border: none;
+        }
+        
+        button.delete-btn:hover, button.delete-row-btn:hover {
+            background-color: #fdeaea;
+            border-radius: 50%;
+        }
+
+        /* IRLM Styles */
+        .irlm-container { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: stretch; gap: 1.5rem; padding: 1.5rem; background-color: var(--light-gray); border-radius: 8px; border: 1px solid var(--border-color); }
+        .irlm-column { display: flex; flex-direction: column; flex-basis: 200px; flex-grow: 1; }
+        .irlm-column h5 { 
+            text-align: center; 
+            margin-top: 0; 
+            margin-bottom: 1rem; 
+            padding-bottom: 0.5rem; 
+            border-bottom: 2px solid var(--brown);
+            font-size: 1.1em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            white-space: nowrap;
+        }
+        .irlm-box { margin-bottom: 1rem; display: flex; flex-direction: column; flex-grow: 1; }
+        .irlm-box.full-height textarea { height: 100%; flex-grow: 1; }
+        .irlm-box label { font-size: 1rem; }
+        .irlm-box textarea { min-height: 80px; flex-grow: 1; }
+        .irlm-arrow { display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: var(--cardinal-red); flex-basis: 40px; flex-grow: 0; }
+        
+        /* FRAME-IS Styles */
+        .adaptation-log-entry { border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem; position: relative; background: #fafafa; }
+        .adaptation-log-entry fieldset { border: 1px solid #ddd; border-radius: 6px; padding: 1.5rem; margin-bottom: 1.5rem; border-top: 3px solid var(--brown); }
+        .adaptation-log-entry legend { font-family: 'Lora', serif; font-size: 1.2rem; font-weight: 700; color: var(--brown); padding: 0 0.5rem; }
+        .checkbox-group { columns: 2; gap: 1.5rem; }
+        .checkbox-group div, .checkbox-group label { break-inside: avoid; margin-bottom: 0.5rem; display: flex; align-items: center; }
+        .checkbox-group input { margin-right: 0.75rem; transform: scale(1.1); }
+        .checkbox-group label { font-weight: 400; color: var(--text-color); font-size: 1rem; }
+        button.delete-log-btn { position: absolute; top: 1rem; right: 1rem; background-color: #fdeaea; color: var(--cardinal-red); border: none; padding: 0.5rem 0.8rem; border-radius: 50%; width: 36px; height: 36px; text-align: center; font-weight: 700; }
+        button.delete-log-btn:hover { background-color: var(--cardinal-red); color: var(--white); }
+
+        .glossary { margin-top: 3rem; padding: 2rem; background-color: var(--light-gray); border-radius: 8px; border: 1px solid var(--border-color); }
+        .glossary-term { margin-bottom: 1.2rem; }
+        .glossary-term:last-child { margin-bottom: 0; }
+        .glossary-term strong { color: var(--gold); }
+
+        @media (max-width: 1024px) {
+            .irlm-arrow { display: none; }
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            table:not(.non-responsive), thead, tbody, th, td, tr { display: block; }
+            thead tr { position: absolute; top: -9999px; left: -9999px; }
+            tr { border: 1px solid var(--border-color); margin-bottom: 1rem; }
+            td { border: none; border-bottom: 1px solid #eee; position: relative; padding-left: 50%; text-align: right; }
+            td:before { position: absolute; top: 12px; left: 12px; width: 45%; padding-right: 10px; white-space: nowrap; font-weight: 600; color: var(--brown); content: attr(data-label); text-align: left; }
+            .checkbox-group { columns: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3>Implementation Tracking & Evaluation Plan</h3>
+
+        <div class="form-group">
+            <label>Project/Initiative Name:</label>
+            <input type="text" />
+        </div>
+        <div class="form-group">
+            <label>Date:</label>
+            <input type="date" />
+        </div>
+        <div class="form-group">
+            <label>Team Members:</label>
+            <input type="text" />
+        </div>
+
+        <h4>Section 1: Project Overview & Timeline</h4>
+        <div class="section-description">
+            <p class="prompt">Define the scope and timeline of your project.</p>
+        </div>
+        <div class="form-group"><label>Evidence-Based Practice (EBP) or Initiative:</label><textarea></textarea></div>
+        <div class="form-group"><label>Primary Goal of Implementation Effort:</label><textarea></textarea></div>
+        <div class="form-group">
+            <label>Project Timeline & Phases:</label>
+            <table id="timeline-table">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">Phase<div class="th-description">Implementation stage</div></th>
+                        <th style="width: 35%;">Task / Milestone<div class="th-description">Specific action or output</div></th>
+                        <th style="width: 15%;">Owner<div class="th-description">Person responsible</div></th>
+                        <th style="width: 15%;">Target Date<div class="th-description">When it's due</div></th>
+                        <th style="width: 10%;">Status<div class="th-description">Current progress</div></th>
+                        <th style="width: 5%;"></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div class="table-actions"><button class="add-row-btn" data-table="timeline-table">Add Timeline Item</button></div>
+        </div>
+
+        <h4>Section 2: Implementation Research Logic Model (IRLM)</h4>
+        <div class="section-description">
+             <p class="prompt">Map the causal pathway from determinants to outcomes.</p>
+        </div>
+        <div class="irlm-container">
+            <div class="irlm-column">
+                <h5>DETERMINANTS</h5>
+                <div class="irlm-box"><label>Intervention Characteristics:</label><textarea></textarea></div>
+                <div class="irlm-box"><label>Outer Setting:</label><textarea></textarea></div>
+                <div class="irlm-box"><label>Inner Setting:</label><textarea></textarea></div>
+                <div class="irlm-box"><label>Characteristics of Individuals:</label><textarea></textarea></div>
+                <div class="irlm-box"><label>Process:</label><textarea></textarea></div>
+            </div>
+            <div class="irlm-arrow">&rarr;</div>
+            <div class="irlm-column"><h5>STRATEGIES</h5><div class="irlm-box full-height"><textarea placeholder="List strategies..."></textarea></div></div>
+            <div class="irlm-arrow">&rarr;</div>
+            <div class="irlm-column"><h5>MECHANISMS</h5><div class="irlm-box full-height"><textarea placeholder="How will strategies produce change?"></textarea></div></div>
+            <div class="irlm-arrow">&rarr;</div>
+            <div class="irlm-column">
+                <h5>OUTCOMES</h5>
+                <div class="irlm-box"><label>Implementation:</label><textarea placeholder="e.g., Adoption, Fidelity..."></textarea></div>
+                <div class="irlm-box"><label>Service:</label><textarea placeholder="e.g., Efficiency, Timeliness..."></textarea></div>
+                <div class="irlm-box"><label>Clinical/Patient:</label><textarea placeholder="e.g., Symptoms, Satisfaction..."></textarea></div>
+            </div>
+        </div>
+        
+        <h4>Section 3: Key Implementation Strategies</h4>
+        <div class="section-description">
+            <p class="prompt">Identify the specific strategies you will use and the determinants they are meant to address.</p>
+        </div>
+        <table id="strategies-table" class="non-responsive">
+            <thead>
+                <tr>
+                    <th style="width: 35%;">Implementation Strategy<div class="th-description">Method to improve adoption</div></th>
+                    <th style="width: 30%;">Determinant(s) Addressed<div class="th-description">Barrier/facilitator it targets</div></th>
+                    <th style="width: 30%;">Mechanism of Action<div class="th-description">How it causes change</div></th>
+                    <th style="width: 5%;"></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div class="table-actions"><button class="add-row-btn" data-table="strategies-table">Add Strategy</button></div>
+
+        <h4>Section 4: Implementation Outcome Evaluation</h4>
+         <div class="section-description">
+            <p class="prompt">Set specific goals for your implementation outcomes.</p>
+            </div>
+        <table id="outcomes-table">
+            <thead>
+                <tr>
+                    <th style="width: 15%;">Outcome<div class="th-description">What to measure</div></th>
+                    <th style="width: 18%;">Area<div class="th-description">Focus of outcome</div></th>
+                    <th style="width: 18%;">Metric & Target<div class="th-description">How to measure & goal</div></th>
+                    <th style="width: 15%;">Data Source<div class="th-description">Where to get data</div></th>
+                    <th style="width: 10%;">Owner<div class="th-description">Who is responsible</div></th>
+                    <th style="width: 12%;">Target Date<div class="th-description">When to measure</div></th>
+                    <th style="width: 12%;">Status<div class="th-description">Current progress</div></th>
+                    <th style="width: 5%;"></th>
+                </tr>
+            </thead>
+            <tbody></tbody> 
+        </table>
+        <div class="table-actions"><button class="add-row-btn" data-table="outcomes-table">Add Outcome</button></div>
+
+        <h4>Section 5: Fidelity Plan</h4>
+         <div class="section-description">
+            <p class="prompt">Define what it means to deliver the EBP as intended.</p>
+            </div>
+        <div class="form-group">
+            <label>Fidelity Plan:</label>
+            <table id="fidelity-plan-table">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">Core Component<div class="th-description">Essential part of the EBP</div></th>
+                        <th style="width: 25%;">Core Function<div class="th-description">The purpose of the component</div></th>
+                        <th style="width: 15%;">Fidelity Dimension<div class="th-description">Aspect of fidelity</div></th>
+                        <th style="width: 20%;">Measurement Method<div class="th-description">How to assess</div></th>
+                        <th style="width: 10%;">Target<div class="th-description">Desired level</div></th>
+                        <th style="width: 5%;"></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div class="table-actions"><button class="add-row-btn" data-table="fidelity-plan-table">Add Fidelity Item</button></div>
+        </div>
+
+        <h4>Section 6: Adaptation Tracking (FRAME-IS)</h4>
+        <div class="section-description">
+            <p>Use this structured log to document modifications as they occur throughout the project.</p>
+        </div>
+        <table id="adaptations-table">
+            <thead>
+                <tr>
+                    <th style="width: 10%;">Date<div class="th-description">When modified</div></th>
+                    <th style="width: 30%;">Modification<div class="th-description">What changed and why</div></th>
+                    <th style="width: 15%;">What was Modified?<div class="th-description">Module 2</div></th>
+                    <th style="width: 15%;">Nature of Change<div class="th-description">Module 3</div></th>
+                    <th style="width: 15%;">Goal<div class="th-description">Module 4</div></th>
+                    <th style="width: 15%;">Planned?<div class="th-description">Module 5</div></th>
+                    <th style="width: 5%;"></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div class="table-actions"><button class="add-row-btn" data-table="adaptations-table">Add Adaptation</button></div>
+
+        <h4>Section 7: Risk & Mitigation Plan</h4>
+        <div class="section-description">
+            <p class="prompt">Identify potential risks to implementation and plan how to address them.</p>
+        </div>
+        <table id="risks-table">
+            <thead>
+                <tr>
+                    <th style="width: 45%;">Potential Risk<div class="th-description">What could go wrong</div></th>
+                    <th style="width: 15%;">Likelihood<div class="th-description">Chance of occurring</div></th>
+                    <th style="width: 35%;">Mitigation Strategy<div class="th-description">How to prevent/reduce it</div></th>
+                    <th style="width: 5%;"></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div class="table-actions"><button class="add-row-btn" data-table="risks-table">Add Risk</button></div>
+        
+        <h4>Section 8: Action Plan</h4>
+        <div class="section-description">
+             <p class="prompt">Capture concrete next steps from your review meetings to promote accountability.</p>
+        </div>
+        <table id="actions-table">
+            <thead>
+                <tr>
+                    <th style="width: 45%;">Action Item / Task<div class="th-description">Specific to-do</div></th>
+                    <th style="width: 20%;">Owner<div class="th-description">Who will do it</div></th>
+                    <th style="width: 15%;">Due Date<div class="th-description">When it's due</div></th>
+                    <th style="width: 15%;">Status<div class="th-description">Current progress</div></th>
+                    <th style="width: 5%;"></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div class="table-actions"><button class="add-row-btn" data-table="actions-table">Add Action</button></div>
+
+        <div class="glossary">
+            <h4 style="border: none; padding-left: 0; margin-top: 0;">Glossary</h4>
+            <div class="glossary-term"><strong>Adaptation:</strong> A deliberate modification made to an implementation strategy or intervention to improve its fit with a given context.</div>
+            <div class="glossary-term"><strong>Adoption:</strong> The decision of an organization, team, or individual to commit to and initiate an EBP or innovation.</div>
+            <div class="glossary-term"><strong>Core Elements:</strong> The essential, non-negotiable parts of an intervention that are critical to its integrity and effectiveness.</div>
+            <div class="glossary-term"><strong>Core Functions:</strong> The underlying processes or goals that an intervention aims to achieve. The "how" can be adapted as long as the function is preserved.</div>
+            <div class="glossary-term"><strong>Evidence-Based Practice (EBP):</strong> An intervention or program that has been shown through rigorous scientific evaluation to be effective.</div>
+            <div class="glossary-term"><strong>Feasibility:</strong> The extent to which an EBP or strategy can be successfully carried out within a given setting.</div>
+            <div class="glossary-term"><strong>Fidelity:</strong> The degree to which an intervention or strategy is delivered as it was intended by its developers.</div>
+            <div class="glossary-term"><strong>Form:</strong> The specific methods, activities, or procedures used to deliver an intervention. This is often the most adaptable aspect.</div>
+            <div class="glossary-term"><strong>Implementation Strategy:</strong> The methods or techniques used to enhance the adoption, implementation, and sustainment of a program or practice (e.g., training, coaching).</div>
+            <div class="glossary-term"><strong>Modification:</strong> Any change made to an implementation strategy or EBP, which can be either planned or unplanned.</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusOptions = ['Not Started', 'In Progress', 'Complete', 'At Risk'];
+            
+            function createTextInputCell(placeholder = '') {
+                const cell = document.createElement('td');
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.placeholder = placeholder;
+                cell.appendChild(input);
+                return cell;
+            }
+
+             function createTextareaCell(placeholder = '') {
+                const cell = document.createElement('td');
+                const textarea = document.createElement('textarea');
+                textarea.placeholder = placeholder;
+                textarea.style.minHeight = '60px';
+                cell.appendChild(textarea);
+                return cell;
+            }
+
+            function createDateInputCell() {
+                const cell = document.createElement('td');
+                const input = document.createElement('input');
+                input.type = 'date';
+                cell.appendChild(input);
+                return cell;
+            }
+            
+            function createSelectCell(options) {
+                const cell = document.createElement('td');
+                const select = document.createElement('select');
+                options.forEach(opt => {
+                    const option = document.createElement('option');
+                    option.value = opt;
+                    option.textContent = opt;
+                    select.appendChild(option);
+                });
+                cell.appendChild(select);
+                return cell;
+            }
+
+            function createDeleteBtnCell(row) {
+                const cell = document.createElement('td');
+                const button = document.createElement('button');
+                button.innerHTML = '&times;';
+                button.className = 'delete-btn delete-row-btn';
+                button.title = 'Delete Row';
+                button.onclick = () => row.remove();
+                cell.appendChild(button);
+                return cell;
+            }
+            
+            function addRow(tableId) {
+                const tableBody = document.querySelector(`#${tableId} tbody`);
+                if (!tableBody) return;
+                const newRow = document.createElement('tr');
+
+                switch (tableId) {
+                    case 'timeline-table':
+                         const phases = ['Exploration', 'Preparation', 'Implementation', 'Sustainment'];
+                         newRow.appendChild(createSelectCell(phases));
+                         newRow.appendChild(createTextInputCell('e.g., Conduct needs assessment...'));
+                         newRow.appendChild(createTextInputCell('Name...'));
+                         newRow.appendChild(createDateInputCell());
+                         newRow.appendChild(createSelectCell(statusOptions));
+                         break;
+                    case 'strategies-table':
+                        newRow.appendChild(createTextInputCell('Strategy...'));
+                        newRow.appendChild(createTextInputCell('Determinant...'));
+                        newRow.appendChild(createTextInputCell('Mechanism...'));
+                        break;
+                    case 'outcomes-table':
+                        const outcomes = ['Acceptability', 'Adoption', 'Appropriateness', 'Feasibility', 'Fidelity', 'Penetration/Reach', 'Cost', 'Sustainability'];
+                        newRow.appendChild(createSelectCell(outcomes));
+                        newRow.appendChild(createTextInputCell('e.g., Perceptions of Fit'));
+                        newRow.appendChild(createTextInputCell('e.g., >80% score'));
+                        newRow.appendChild(createTextInputCell('e.g., Staff Survey'));
+                        newRow.appendChild(createTextInputCell('Name'));
+                        newRow.appendChild(createDateInputCell());
+                        newRow.appendChild(createSelectCell(statusOptions));
+                        break;
+                    case 'fidelity-plan-table':
+                        const dimensions = ['Adherence', 'Dose', 'Quality', 'Participant Responsiveness'];
+                        newRow.appendChild(createTextInputCell('e.g., Daily mindfulness exercise'));
+                        newRow.appendChild(createTextInputCell('e.g., To improve focus'));
+                        newRow.appendChild(createSelectCell(dimensions));
+                        newRow.appendChild(createTextInputCell('e.g., Observation checklist'));
+                        newRow.appendChild(createTextInputCell('e.g., >90% of steps'));
+                        break;
+                    case 'adaptations-table':
+                        const whatModified = ['Content', 'Evaluation', 'Training', 'Context'];
+                        const nature = ['Tailoring', 'Adding', 'Removing', 'Shortening', 'Lengthening', 'Substituting', 'Reordering'];
+                        const goal = ['Increase Reach', 'Increase Effectiveness', 'Increase Adoption', 'Increase Acceptability', 'Improve Fit', 'Decrease Costs', 'Improve Fidelity', 'Improve Sustainability', 'Increase Equity'];
+                        const planned = ['Planned/Proactive', 'Planned/Reactive', 'Unplanned/Reactive'];
+                        newRow.appendChild(createDateInputCell());
+                        newRow.appendChild(createTextareaCell('Describe change & why...'));
+                        newRow.appendChild(createSelectCell(whatModified));
+                        newRow.appendChild(createSelectCell(nature));
+                        newRow.appendChild(createSelectCell(goal));
+                        newRow.appendChild(createSelectCell(planned));
+                        break;
+                    case 'risks-table':
+                         newRow.appendChild(createTextInputCell('Risk...'));
+                         newRow.appendChild(createSelectCell(['Low', 'Medium', 'High']));
+                         newRow.appendChild(createTextInputCell('Mitigation...'));
+                         break;
+                    case 'actions-table':
+                        newRow.appendChild(createTextInputCell('Task...'));
+                        newRow.appendChild(createTextInputCell('Owner'));
+                        newRow.appendChild(createDateInputCell());
+                        newRow.appendChild(createSelectCell(statusOptions));
+                        break;
+                }
+                
+                newRow.appendChild(createDeleteBtnCell(newRow));
+
+                const headers = document.querySelectorAll(`#${tableId} th`);
+                const cells = newRow.querySelectorAll('td');
+                cells.forEach((cell, index) => {
+                    const header = headers[index];
+                    if (header && header.childNodes.length > 0) {
+                        const mainHeadingText = header.childNodes[0].textContent.trim();
+                        if (mainHeadingText) {
+                            cell.setAttribute('data-label', mainHeadingText);
+                        }
+                    }
+                });
+
+                tableBody.appendChild(newRow);
+            }
+            
+            document.querySelectorAll('.add-row-btn[data-table]').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const tableId = e.target.getAttribute('data-table');
+                    addRow(tableId);
+                });
+            });
+
+            // Pre-populate tables
+            ['timeline-table', 'strategies-table', 'outcomes-table', 'fidelity-plan-table', 'adaptations-table', 'risks-table', 'actions-table'].forEach(id => addRow(id));
+            
+        });
+    </script>
+</body>
+</html>
